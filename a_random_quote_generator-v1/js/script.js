@@ -3,10 +3,6 @@ Treehouse FSJS Techdegree:
 project 1 - A Random Quote Generator
 ******************************************/
 
-// For assistance: 
-  // Check the "Project Resources" section of the project instructions
-  // Reach out in your Slack community - https://treehouse-fsjs-102.slack.com/app_redirect?channel=chit-chat
-
 /*** 
  * `quotes` array 
 ***/
@@ -43,19 +39,38 @@ const quotes = [
   }
 ];
 
-/***
- * `getRandomQuote` function
-***/
-function getRandomQuote(array) {
-  let randomNumber = Math.floor(Math.random() * array.length);
-  let selectQ = quotes[randomNumber];
-  console.log(randomNumber);
-  return selectQ;
-}
+//previous index to check against random number generated
+let prevIndex = null;
 
+function getRandomNumber(array) {
+  const randomNumber = Math.floor(Math.random() * array.length);
+  //prevIndex = randomNumber;
+  return randomNumber;
+};
+
+function selectQuote(array) {
+  let index = getRandomNumber(array);
+  console.log(index);
+  // if statement reduce chance of duplicate quote
+  if (prevIndex !== index) {
+    const quote = array[index];
+    prevIndex = index;
+    return quote;
+  } else {
+    index = getRandomNumber(array);
+    const quote = array[index];
+    prevIndex = index;
+    return quote;
+  }
+
+};
+
+let timer = setInterval(printQuote, 10000);
+printQuote();
 
 function printQuote() {
-  let randomQuote = getRandomQuote(quotes);
+
+  const randomQuote = selectQuote(quotes);
   let quoteString = `<p class="quote">${randomQuote.quote}</p><p class="source">${randomQuote.source}`;
   
   //check for citation property in array, if true add citation to HTML string
@@ -70,25 +85,13 @@ function printQuote() {
   document.getElementById('quote-box').innerHTML = quoteString;
   document.body.style.backgroundColor = `rgb(${randomColorValue()},${randomColorValue()},${randomColorValue()})`;
   
+  clearInterval(timer);
+  timer = setInterval(printQuote, 10000);
 }
-
-//creat random color function so that each time it is called it runs a different value
+//creat random color function so that each time it is called it returns a different value
 function randomColorValue() {
   colorValue = Math.floor(Math.random() * 130);
   return colorValue;
 }
 
-
-let quoteTimer = setInterval(function() {
-  printQuote()}, 11000);
-
-
-
-
-
-/***
- * click event listener for the print quote button
- * DO NOT CHANGE THE CODE BELOW!!
-***/
-
-document.getElementById('load-quote').addEventListener("click", printQuote, false);
+document.getElementById('load-quote').addEventListener("click", printQuote);
